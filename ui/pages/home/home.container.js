@@ -64,6 +64,7 @@ import Home from './home.component';
 
 const mapStateToProps = (state) => {
   const { metamask, appState } = state;
+  console.log("home", state.metamask.network)
   const {
     suggestedAssets,
     seedPhraseBackedUp,

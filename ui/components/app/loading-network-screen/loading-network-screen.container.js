@@ -10,7 +10,7 @@ const mapStateToProps = (state) => {
   const { loadingMessage } = state.appState;
   const { provider } = state.metamask;
   const { rpcUrl, chainId, ticker, nickname, type } = provider;
-
+  console.log(state.metamask.network)
   const setProviderArgs =
     type === NETWORK_TYPES.RPC
       ? [rpcUrl, chainId, ticker, nickname]

@@ -281,7 +281,9 @@ export default class NetworkController extends EventEmitter {
   }
 
   rollbackToPreviousProvider() {
+    console.log("rollbackToPreviousProvider")
     const config = this.previousProviderStore.getState();
+    console.log({ config })
     this.providerStore.updateState(config);
     this._switchNetwork(config);
   }
@@ -426,6 +428,9 @@ export default class NetworkController extends EventEmitter {
     this._configureProvider(opts);
     // Notify subscribers that network has changed
     this.emit(NETWORK_EVENTS.NETWORK_DID_CHANGE, opts.type);
+    console.log("after emit")
+    this._setNetworkState(this._getNetworkId());
+    console.log("_setNetworkState")
   }
 
   _configureProvider({ type, rpcUrl, chainId }) {

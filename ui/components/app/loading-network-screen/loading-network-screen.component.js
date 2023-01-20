@@ -34,6 +34,32 @@ export default class LoadingNetworkScreen extends PureComponent {
     );
   };
 
+  componentDidUpdate = (prevProps) => {
+    const { provider } = this.props;
+    const { provider: prevProvider } = prevProps;
+    console.log(prevProps, this.props)
+    if (provider.type !== prevProvider.type) {
+      window.clearTimeout(this.cancelCallTimeout);
+      this.setState({ showErrorScreen: false });
+      this.cancelCallTimeout = setTimeout(
+        this.cancelCall,
+        this.props.cancelTime || SECOND * 15,
+      );
+    }
+  };
+
+  componentWillUnmount = () => {
+    window.clearTimeout(this.cancelCallTimeout);
+  };
+
+  cancelCall = () => {
+    const { isNetworkLoading } = this.props;
+
+    if (isNetworkLoading) {
+      this.setState({ showErrorScreen: true });
+    }
+  };
+
   getConnectingLabel = function (loadingMessage) {
     if (loadingMessage) {
       return loadingMessage;
@@ -114,31 +140,6 @@ export default class LoadingNetworkScreen extends PureComponent {
     );
   };
 
-  cancelCall = () => {
-    const { isNetworkLoading } = this.props;
-
-    if (isNetworkLoading) {
-      this.setState({ showErrorScreen: true });
-    }
-  };
-
-  componentDidUpdate = (prevProps) => {
-    const { provider } = this.props;
-    const { provider: prevProvider } = prevProps;
-    if (provider.type !== prevProvider.type) {
-      window.clearTimeout(this.cancelCallTimeout);
-      this.setState({ showErrorScreen: false });
-      this.cancelCallTimeout = setTimeout(
-        this.cancelCall,
-        this.props.cancelTime || SECOND * 15,
-      );
-    }
-  };
-
-  componentWillUnmount = () => {
-    window.clearTimeout(this.cancelCallTimeout);
-  };
-
   render() {
     const { rollbackToPreviousProvider, showDeprecatedRpcUrlWarning } =
       this.props;
@@ -159,7 +160,10 @@ export default class LoadingNetworkScreen extends PureComponent {
         header={
           <div
             className="page-container__header-close"
-            onClick={rollbackToPreviousProvider}
+            onClick={() => {
+              console.log("rollbackToPreviousProvider")
+              rollbackToPreviousProvider()
+            }}
           />
         }
         showLoadingSpinner={!this.state.showErrorScreen}
